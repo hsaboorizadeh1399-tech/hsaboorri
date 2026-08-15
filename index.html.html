@@ -1,0 +1,2453 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ساختار پیلار-کلاستر سئو | اینفورتک</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F3F5F9;
+    --bg-grid: #E7EBF2;
+    --panel: #FFFFFF;
+    --ink: #131722;
+    --ink-soft: #545D71;
+    --ink-faint: #8890A2;
+    --line: #DDE2EC;
+    --line-strong: #C6CDDC;
+    --radius: 14px;
+
+    --p1: #4C5FD5; --p1-bg:#EEF0FC; --p1-bg-strong:#E2E5FA;
+    --p2: #0E9F6E; --p2-bg:#E9F9F2; --p2-bg-strong:#D9F4E9;
+    --p3: #C2740A; --p3-bg:#FCF2E2; --p3-bg-strong:#F8E8CC;
+    --p4: #8B5CF6; --p4-bg:#F3EEFE; --p4-bg-strong:#E9E0FC;
+    --p5: #C2255C; --p5-bg:#FCE9F0; --p5-bg-strong:#F9D6E4;
+    --p6: #0891B2; --p6-bg:#E4F5F9; --p6-bg-strong:#CFEDF4;
+    --sup:#64748B; --sup-bg:#EEF0F4; --sup-bg-strong:#E2E5EC;
+
+    --shadow-sm: 0 1px 2px rgba(19,23,34,.06);
+    --shadow-md: 0 6px 20px -6px rgba(19,23,34,.16);
+    --shadow-lg: 0 20px 45px -12px rgba(19,23,34,.22);
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px) 0 0/100% 40px,
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px) 0 0/40px 100%,
+      var(--bg);
+    color:var(--ink);
+    font-family:'Vazirmatn', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .mono{ font-family:'JetBrains Mono', monospace; direction:ltr; unicode-bidi:embed; }
+
+  /* ---------------- Top bar ---------------- */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    backdrop-filter: blur(10px);
+    background: rgba(243,245,249,.86);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    max-width:1360px; margin:0 auto; padding:16px 28px;
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    flex-wrap:wrap;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand-mark{
+    width:38px; height:38px; border-radius:10px;
+    background: linear-gradient(135deg, var(--p1), var(--p4) 55%, var(--p5));
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:800; font-size:15px; flex:none;
+    box-shadow: var(--shadow-sm);
+  }
+  .brand-text h1{ margin:0; font-size:16px; font-weight:700; line-height:1.3; }
+  .brand-text p{ margin:2px 0 0; font-size:12.5px; color:var(--ink-faint); }
+
+  .stats{ display:flex; gap:10px; flex-wrap:wrap; }
+  .stat{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:7px 14px; text-align:center; min-width:78px;
+    box-shadow: var(--shadow-sm);
+  }
+  .stat b{ display:block; font-size:16px; font-weight:800; }
+  .stat span{ font-size:10.5px; color:var(--ink-faint); }
+
+  .controls{ display:flex; gap:8px; }
+  .btn{
+    font-family:inherit; font-size:12.5px; font-weight:600; cursor:pointer;
+    border:1px solid var(--line-strong); background:var(--panel); color:var(--ink);
+    border-radius:9px; padding:8px 14px; transition:.15s ease;
+  }
+  .btn:hover{ border-color:var(--ink-faint); background:#FAFBFD; }
+  .btn:focus-visible, a:focus-visible, summary:focus-visible, button:focus-visible{
+    outline:2px solid var(--p1); outline-offset:2px;
+  }
+  .btn.primary{ background:var(--ink); color:#fff; border-color:var(--ink); }
+  .btn.primary:hover{ background:#262c3d; }
+
+  /* ---------------- Hero ---------------- */
+  .hero{ max-width:1360px; margin:0 auto; padding:34px 28px 6px; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:11.5px; font-weight:700; letter-spacing:.02em;
+    color:var(--p1); background:var(--p1-bg); border:1px solid var(--p1-bg-strong);
+    padding:5px 12px; border-radius:100px; margin-bottom:14px;
+  }
+  .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--p1); }
+  .hero h2{ font-size: clamp(26px,3.2vw,38px); line-height:1.25; margin:0 0 10px; font-weight:800; letter-spacing:-.01em; }
+  .hero p.lead{ font-size:15px; color:var(--ink-soft); max-width:680px; line-height:1.9; margin:0 0 22px; }
+
+  /* ---------------- Legend ---------------- */
+  .legend{
+    display:flex; flex-wrap:wrap; gap:8px 18px; align-items:center;
+    padding:12px 16px; background:var(--panel); border:1px solid var(--line);
+    border-radius:12px; margin-bottom:8px; font-size:12px; color:var(--ink-soft);
+  }
+  .legend-title{ font-weight:700; color:var(--ink); font-size:12px; }
+  .legend-item{ display:flex; align-items:center; gap:6px; }
+  .legend-swatch{ width:11px; height:11px; border-radius:4px; flex:none; }
+
+  /* ---------------- Tree ---------------- */
+  .tree-wrap{ max-width:1360px; margin:0 auto; padding:26px 28px 70px; }
+
+  .root-row{ display:flex; justify-content:center; margin-bottom:0; }
+  .root-node{
+    background:var(--ink); color:#fff; border-radius:12px;
+    padding:12px 26px; font-weight:700; font-size:14px;
+    box-shadow: var(--shadow-md);
+    display:flex; align-items:center; gap:10px;
+  }
+  .root-node .mono{ color:#B7C4E8; font-size:12.5px; }
+
+  .connector-stem{
+    width:2px; height:26px; background:var(--line-strong); margin:0 auto;
+  }
+  .connector-bar{
+    height:2px; background:var(--line-strong);
+    margin:0 auto;
+  }
+  .connector-drops{
+    display:flex; justify-content:space-between;
+  }
+  .connector-drop{ width:2px; height:20px; background:var(--line-strong); }
+
+  .pillars-row{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:16px;
+    margin-top:0;
+  }
+
+  .pillar-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow:hidden;
+    transition: box-shadow .18s ease, transform .18s ease;
+    display:flex; flex-direction:column;
+  }
+  .pillar-card[open]{ box-shadow: var(--shadow-lg); }
+  .pillar-card summary{
+    list-style:none; cursor:pointer; padding:16px 16px 14px;
+    position:relative;
+  }
+  .pillar-card summary::-webkit-details-marker{ display:none; }
+
+  .pillar-num{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:24px; height:24px; border-radius:7px; font-size:11.5px; font-weight:800;
+    color:#fff; margin-inline-end:8px;
+  }
+  .pillar-head-row{ display:flex; align-items:center; margin-bottom:10px; }
+  .pillar-chevron{
+    margin-inline-start:auto; color:var(--ink-faint); font-size:11px;
+    transition: transform .18s ease; flex:none;
+  }
+  .pillar-card[open] .pillar-chevron{ transform:rotate(180deg); }
+
+  .pillar-title{ font-size:14.5px; font-weight:800; line-height:1.35; margin:0 0 4px; }
+  .pillar-headterm{ font-size:11.5px; color:var(--ink-faint); line-height:1.5; margin:0 0 10px; min-height:32px; }
+
+  .pillar-meta{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .pillar-url{ font-size:10.5px; color:var(--ink-soft); }
+  .pillar-count{
+    font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:100px; flex:none;
+  }
+
+  .pillar-body{
+    border-top:1px solid var(--line);
+    padding:12px 14px 16px;
+    background:#FBFCFE;
+  }
+
+  .cluster-group{ margin-bottom:6px; }
+  .cluster-group:last-child{ margin-bottom:0; }
+  .cluster-toggle{
+    width:100%; text-align:right; cursor:pointer;
+    display:flex; align-items:center; gap:8px;
+    background:transparent; border:none; padding:8px 6px;
+    border-radius:8px; font-family:inherit;
+  }
+  .cluster-toggle:hover{ background:var(--panel); }
+  .cluster-name{ font-size:12px; font-weight:700; color:var(--ink); }
+  .cluster-count{ font-size:10.5px; color:var(--ink-faint); font-weight:600; }
+  .cluster-chevron{
+    margin-inline-start:auto; font-size:10px; color:var(--ink-faint);
+    transition:transform .15s ease; flex:none;
+  }
+  .cluster-toggle[aria-expanded="true"] .cluster-chevron{ transform:rotate(180deg); }
+
+  .item-list{
+    list-style:none; margin:2px 0 8px; padding:2px 6px 2px 2px;
+    display:none;
+    border-inline-start:2px solid var(--line);
+    margin-inline-start:8px;
+    padding-inline-start:12px;
+  }
+  .item-list.open{ display:block; }
+
+  .item-row{ padding:8px 4px; border-bottom:1px dashed var(--line); }
+  .item-row:last-child{ border-bottom:none; }
+  .item-fmt{
+    display:inline-block; font-size:9.5px; font-weight:700; color:var(--ink-soft);
+    background:var(--panel); border:1px solid var(--line); border-radius:5px;
+    padding:1px 6px; margin-inline-start:6px;
+  }
+  .item-title{ font-size:12px; font-weight:600; line-height:1.6; }
+  .item-sub{
+    margin-top:3px; display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px;
+    font-size:10.5px; color:var(--ink-faint);
+  }
+  .item-pkw::before{ content:"PKW · "; color:var(--ink-faint); font-weight:600; }
+  .item-url{ font-size:10px; color:var(--ink-soft); }
+  .item-note{ font-size:10px; color:var(--ink-faint); font-style:normal; }
+  .item-note::before{ content:"— "; }
+
+  /* pillar accent binding */
+  .pillar-card.c1 summary{ border-top:3px solid var(--p1); }
+  .pillar-card.c2 summary{ border-top:3px solid var(--p2); }
+  .pillar-card.c3 summary{ border-top:3px solid var(--p3); }
+  .pillar-card.c4 summary{ border-top:3px solid var(--p4); }
+  .pillar-card.c5 summary{ border-top:3px solid var(--p5); }
+  .pillar-card.c6 summary{ border-top:3px solid var(--p6); }
+
+  .c1 .pillar-num{ background:var(--p1); } .c1 .pillar-count{ background:var(--p1-bg); color:var(--p1); }
+  .c2 .pillar-num{ background:var(--p2); } .c2 .pillar-count{ background:var(--p2-bg); color:var(--p2); }
+  .c3 .pillar-num{ background:var(--p3); } .c3 .pillar-count{ background:var(--p3-bg); color:var(--p3); }
+  .c4 .pillar-num{ background:var(--p4); } .c4 .pillar-count{ background:var(--p4-bg); color:var(--p4); }
+  .c5 .pillar-num{ background:var(--p5); } .c5 .pillar-count{ background:var(--p5-bg); color:var(--p5); }
+  .c6 .pillar-num{ background:var(--p6); } .c6 .pillar-count{ background:var(--p6-bg); color:var(--p6); }
+
+  /* ---------------- Supporting row ---------------- */
+  .supporting-wrap{ margin-top:34px; }
+  .supporting-label{
+    display:flex; align-items:center; gap:10px; margin-bottom:12px;
+    font-size:11.5px; font-weight:700; color:var(--ink-faint);
+  }
+  .supporting-label::before, .supporting-label::after{
+    content:""; flex:1; height:1px; background:var(--line);
+  }
+  .support-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow: var(--shadow-sm);
+  }
+  .support-card summary{
+    list-style:none; cursor:pointer; padding:14px 18px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .support-card summary::-webkit-details-marker{ display:none; }
+  .support-card .pillar-chevron{ margin-inline-start:auto; }
+  .support-card[open] .pillar-chevron{ transform:rotate(180deg); }
+  .support-icon{
+    width:30px; height:30px; border-radius:8px; background:var(--sup-bg); color:var(--sup);
+    display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; flex:none;
+  }
+  .support-title{ font-size:13.5px; font-weight:700; }
+  .support-sub{ font-size:11px; color:var(--ink-faint); margin-top:2px; }
+  .support-body{
+    border-top:1px solid var(--line); padding:14px 18px 18px; background:#FBFCFE;
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:8px 22px;
+  }
+
+  /* ---------------- Footer ---------------- */
+  .footnote{
+    max-width:1360px; margin:0 auto; padding:0 28px 50px;
+    font-size:11.5px; color:var(--ink-faint); line-height:2;
+  }
+
+  /* ---------------- Responsive ---------------- */
+  @media (max-width: 1180px){
+    .pillars-row{ grid-template-columns:repeat(3, 1fr); }
+    .support-body{ grid-template-columns:repeat(2, 1fr); }
+  }
+  @media (max-width: 760px){
+    .pillars-row{ grid-template-columns:repeat(2, 1fr); }
+    .connector-drops, .connector-bar{ display:none; }
+    .stats{ display:none; }
+    .support-body{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 480px){
+    .pillars-row{ grid-template-columns:1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; }
+  }
+
+  @media print{
+    .topbar, .controls{ display:none; }
+    body{ background:#fff; }
+    .item-list{ display:block !important; }
+    .pillar-card, .support-card{ break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">اف</div>
+        <div class="brand-text">
+          <h1>ساختار پیلار-کلاستر سئو</h1>
+          <p>پروژه بازطراحی اینفورتک</p>
+        </div>
+      </div>
+      <div class="stats" id="stats"></div>
+      <div class="controls">
+        <button class="btn" id="expandAll">باز کردن همه</button>
+        <button class="btn primary" id="collapseAll">بستن همه</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow"><span class="dot"></span> نقشه سایت / Topic Cluster Model</div>
+    <h2>معماری محتوا در یک نگاه</h2>
+    <p class="lead">
+      این نقشه، ساختار پیلار-کلاستر سایت را از صفحه اصلی تا تک‌تک صفحات محتوایی نشان می‌دهد.
+      روی هر پیلار کلیک کنید تا خوشه‌های آن باز شود، و روی هر خوشه کلیک کنید تا فهرست کامل صفحات
+      همراه با کلمه کلیدی و آدرس پیشنهادی دیده شود.
+    </p>
+    <div class="legend" id="legend">
+      <span class="legend-title">پیلارها:</span>
+    </div>
+  </div>
+
+  <div class="tree-wrap">
+    <div class="root-row">
+      <div class="root-node">صفحه اصلی <span class="mono">/</span></div>
+    </div>
+    <div class="connector-stem"></div>
+    <div class="connector-bar"></div>
+    <div class="connector-drops" id="connectorDrops"></div>
+
+    <div class="pillars-row" id="pillarsRow"></div>
+
+    <div class="supporting-wrap">
+      <div class="supporting-label">خوشه‌های پشتیبان — اتصال‌دهنده میان همه پیلارها</div>
+      <details class="support-card" id="supportCard">
+        <summary>
+          <div class="support-icon">؟</div>
+          <div>
+            <div class="support-title">مطالعات موردی، درباره ما، تماس، آرشیوهای والد</div>
+            <div class="support-sub" id="supportSub"></div>
+          </div>
+          <span class="pillar-chevron">▾</span>
+        </summary>
+        <div class="support-body" id="supportBody"></div>
+      </details>
+    </div>
+  </div>
+
+  <div class="footnote">
+    PKW = کلمه کلیدی اصلی پیشنهادی؛ پیش از نگارش با ابزار Keyword Research نهایی شود · آدرس‌های شامل <span class="mono">[slug]</span> بر اساس عنوان نهایی هر محتوا تکمیل می‌شوند.
+  </div>
+
+<script id="site-data" type="application/json">
+{
+  "pillars": [
+    {
+      "id": "خود",
+      "name": "خود",
+      "num": "۱",
+      "url": "/journeys/self",
+      "headterm": "مسیر رشد مدیر و رهبر",
+      "color": "#4C5FD5",
+      "count": 42,
+      "clusters": [
+        {
+          "name": "خوشه اندیشه",
+          "items": [
+            {
+              "fmt": "مقاله",
+              "title": "نشانه‌های آمادگی برای تبدیل‌شدن از متخصص به مدیر",
+              "pkw": "تبدیل شدن از متخصص به مدیر",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "تفاوت تصمیم‌گیری مدیر با تصمیم‌گیری متخصص فنی",
+              "pkw": "تفاوت تصمیم گیری مدیر و متخصص فنی",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "تفکر سیستمی چیست و چرا برای مدیران حیاتی است",
+              "pkw": "تفکر سیستمی چیست",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "بهره‌وری شخصی مدیران؛ مدیریت زمان و انرژی",
+              "pkw": "بهره وری شخصی مدیران",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "چگونه اولین ۹۰ روز مدیریت را طی کنیم",
+              "pkw": "اولین 90 روز مدیریت",
+              "url": "/insights/articles/[slug]",
+              "note": "برای Long-tail «تازه مدیر شده‌ام»"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "از مدیر به رهبر — چه چیزی تغییر می‌کند؟",
+              "pkw": "تفاوت مدیر و رهبر",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "مسیر شغلی من چیست؟ چارچوب تصمیم‌گیری برای انتخاب مسیر",
+              "pkw": "انتخاب مسیر شغلی",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "یادداشت شخصی/اجرایی",
+              "title": "روایت تبدیل‌شدن از مهندس به مدیر",
+              "pkw": "تجربه تبدیل شدن از مهندس به مدیر",
+              "url": "/insights/articles/[slug]",
+              "note": "طبق سند: «تجربه‌های واقعی»"
+            },
+            {
+              "fmt": "پادکست",
+              "title": "گفت‌وگو درباره رهبری و تصمیم‌گیری در ابتدای مسیر مدیریتی",
+              "pkw": "رهبری و تصمیم گیری مدیر تازه‌کار",
+              "url": "/insights/podcasts/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "ویدئو",
+              "title": "آموزش کوتاه درباره یکی از موضوعات کلیدی پیلار خود",
+              "pkw": "—",
+              "url": "/insights/videos/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "ترجمه",
+              "title": "مقاله شاخص بین‌المللی درباره گذار به مدیریت",
+              "pkw": "—",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "رهبرانی که هوش مصنوعی جای‌شان را نمی‌گیرد",
+              "pkw": "رهبرانی که هوش مصنوعی جای‌شان را نمی‌گیرد",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/the-best-leaders-cant-be-replaced-by-ai/",
+              "note": "پیلار خود؛ موضوع رهبری، نه صرفاً فناوری · آدرس واقعی موجود در سایت"
+            }
+          ]
+        },
+        {
+          "name": "خوشه یادگیری",
+          "items": [
+            {
+              "fmt": "دوره",
+              "title": "مهارت‌های پایه مدیریت برای مدیران تازه‌کار",
+              "pkw": "دوره مدیریت برای مدیران تازه کار",
+              "url": "/learning/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "دوره",
+              "title": "تصمیم‌گیری مؤثر برای مدیران",
+              "pkw": "دوره تصمیم گیری برای مدیران",
+              "url": "/learning/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "کارگاه",
+              "title": "تفکر سیستمی در عمل",
+              "pkw": "کارگاه تفکر سیستمی",
+              "url": "/learning/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "وبینار",
+              "title": "مسیر شغلی از متخصص تا کارآفرین",
+              "pkw": "وبینار مسیر شغلی",
+              "url": "/learning/[slug]",
+              "note": ""
+            }
+          ]
+        },
+        {
+          "name": "خوشه خدمت",
+          "items": [
+            {
+              "fmt": "صفحه خدمت",
+              "title": "کوچینگ مدیران",
+              "pkw": "کوچینگ مدیران",
+              "url": "/consulting/coaching",
+              "note": "فرم درخواست جلسه کوچینگ"
+            },
+            {
+              "fmt": "زیرصفحه/بخش",
+              "title": "کوچینگ رهبران فنی و CTO",
+              "pkw": "کوچینگ رهبران فنی",
+              "url": "/consulting/coaching#tech-leaders",
+              "note": "اتصال به پیلار Engineering Leadership"
+            }
+          ]
+        },
+        {
+          "name": "خوشه اثبات",
+          "items": [
+            {
+              "fmt": "مطالعه موردی",
+              "title": "مسیر تبدیل یک متخصص فنی به مدیر واحد",
+              "pkw": "نمونه تبدیل متخصص فنی به مدیر",
+              "url": "/case-studies/[slug]",
+              "note": "مسئله → مداخله کوچینگ → نتیجه"
+            }
+          ]
+        },
+        {
+          "name": "زیرصفحه موقعیتی",
+          "items": [
+            {
+              "fmt": "لندینگ کوچک / فیلتر",
+              "title": "تازه مدیر شده‌ام",
+              "pkw": "تازه مدیر شده ام چکار کنم",
+              "url": "/journeys/self?start=new-manager",
+              "note": ""
+            },
+            {
+              "fmt": "لندینگ کوچک / فیلتر",
+              "title": "می‌خواهم رهبر بهتری باشم",
+              "pkw": "چطور رهبر بهتری شوم",
+              "url": "/journeys/self?start=leadership",
+              "note": ""
+            },
+            {
+              "fmt": "لندینگ کوچک / فیلتر",
+              "title": "می‌خواهم تصمیم‌های بهتری بگیرم",
+              "pkw": "چطور تصمیم بهتر بگیرم",
+              "url": "/journeys/self?start=decisions",
+              "note": ""
+            },
+            {
+              "fmt": "لندینگ کوچک / فیلتر",
+              "title": "می‌خواهم مسیر شغلی‌ام را پیدا کنم",
+              "pkw": "پیدا کردن مسیر شغلی",
+              "url": "/journeys/self?start=career-path",
+              "note": ""
+            }
+          ]
+        },
+        {
+          "name": "Engineering Leadership / نقشه مرحله‌ای",
+          "items": [
+            {
+              "fmt": "صفحه/سکشن لنگر",
+              "title": "متخصص ارشد",
+              "pkw": "مسیر شغلی متخصص ارشد",
+              "url": "/journeys/engineering-leadership#senior-specialist",
+              "note": ""
+            },
+            {
+              "fmt": "صفحه/سکشن لنگر",
+              "title": "Tech Lead",
+              "pkw": "مسیر شغلی Tech Lead",
+              "url": "/journeys/engineering-leadership#tech-lead",
+              "note": ""
+            },
+            {
+              "fmt": "صفحه/سکشن لنگر",
+              "title": "Engineering Manager",
+              "pkw": "مسیر شغلی Engineering Manager",
+              "url": "/journeys/engineering-leadership#engineering-manager",
+              "note": ""
+            },
+            {
+              "fmt": "صفحه/سکشن لنگر",
+              "title": "Head of Engineering",
+              "pkw": "مسیر شغلی Head of Engineering",
+              "url": "/journeys/engineering-leadership#head-of-engineering",
+              "note": ""
+            },
+            {
+              "fmt": "صفحه/سکشن لنگر",
+              "title": "CTO",
+              "pkw": "مسیر شغلی CTO",
+              "url": "/journeys/engineering-leadership#cto",
+              "note": ""
+            }
+          ]
+        },
+        {
+          "name": "Engineering Leadership / خوشه اندیشه",
+          "items": [
+            {
+              "fmt": "مقاله",
+              "title": "تفاوت Tech Lead و Engineering Manager چیست",
+              "pkw": "تفاوت Tech Lead و Engineering Manager",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "چگونه از برنامه‌نویس به Tech Lead تبدیل شویم",
+              "pkw": "تبدیل شدن به Tech Lead",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "مسئولیت‌های یک Engineering Manager در روز اول",
+              "pkw": "مسئولیت های Engineering Manager",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "مهارت‌های لازم برای Head of Engineering",
+              "pkw": "مهارت های Head of Engineering",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "از Engineering Manager تا CTO؛ چه چیزی باید تغییر کند",
+              "pkw": "از Engineering Manager تا CTO",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "چالش‌های رایج رهبران فنی در گذار به مدیریت",
+              "pkw": "چالش رهبران فنی در گذار به مدیریت",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "ترجمه",
+              "title": "مقالات شاخص بین‌المللی حوزه Engineering Leadership",
+              "pkw": "—",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "گفت‌وگو (پادکست/ویدئو)",
+              "title": "مصاحبه با یک CTO درباره مسیر شغلی‌اش",
+              "pkw": "مصاحبه با CTO",
+              "url": "/insights/podcasts/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "یادداشت تجربه واقعی",
+              "title": "روایت گذار یک مهندس ارشد به رهبر فنی",
+              "pkw": "تجربه گذار مهندس به رهبر فنی",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            }
+          ]
+        },
+        {
+          "name": "Engineering Leadership / خوشه یادگیری و خدمات",
+          "items": [
+            {
+              "fmt": "دوره",
+              "title": "مهارت‌های مدیریتی برای مهندسان ارشد",
+              "pkw": "دوره مدیریت برای مهندسان ارشد",
+              "url": "/learning/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "کارگاه",
+              "title": "از Tech Lead تا Engineering Manager",
+              "pkw": "کارگاه Tech Lead تا Engineering Manager",
+              "url": "/learning/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "خدمت مشاوره",
+              "title": "کوچینگ رهبران فنی و CTO",
+              "pkw": "کوچینگ رهبران فنی و CTO",
+              "url": "/consulting/coaching#tech-leaders",
+              "note": "بخش اختصاصی"
+            }
+          ]
+        },
+        {
+          "name": "Engineering Leadership / اتصال به کتاب",
+          "items": [
+            {
+              "fmt": "لینک برجسته",
+              "title": "معرفی کتاب «تا مدیر شدن» به‌عنوان منبع شروع",
+              "pkw": "—",
+              "url": "/books/ta-modir-shodan",
+              "note": ""
+            }
+          ]
+        },
+        {
+          "name": "Engineering Leadership / جامعه (فاز دوم)",
+          "items": [
+            {
+              "fmt": "صفحه خبرنامه",
+              "title": "خبرنامه رهبران فنی",
+              "pkw": "خبرنامه رهبران فنی",
+              "url": "/journeys/engineering-leadership#newsletter",
+              "note": "فاز دوم؛ پیشنهاد راه‌اندازی زودهنگام"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "تیم",
+      "name": "تیم",
+      "num": "۲",
+      "url": "/journeys/team",
+      "headterm": "ساخت تیم چابک و یادگیرنده",
+      "color": "#0E9F6E",
+      "count": 25,
+      "clusters": [
+        {
+          "name": "خوشه اندیشه",
+          "items": [
+            {
+              "fmt": "مقاله",
+              "title": "فرهنگ همکاری تیمی چگونه ساخته می‌شود",
+              "pkw": "فرهنگ همکاری تیمی",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "Agile چیست و چرا سازمان شما به آن نیاز دارد",
+              "pkw": "Agile چیست",
+              "url": "/insights/articles/[slug]",
+              "note": "پل به خوشه یادگیری Agile"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "OKR در برابر KPI؛ کدام برای تیم شما مناسب‌تر است",
+              "pkw": "OKR در برابر KPI",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "مدیریت عملکرد تیم بدون میکرومدیریت",
+              "pkw": "مدیریت عملکرد تیم",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "رهبری تیمی در دوره دورکاری/ترکیبی",
+              "pkw": "رهبری تیم دورکار",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "چگونه فرهنگ نوآوری در تیم بسازیم",
+              "pkw": "فرهنگ نوآوری در تیم",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "یادداشت اجرایی",
+              "title": "تجربه تحول یک تیم فنی به تیم چابک",
+              "pkw": "تجربه تحول تیم به چابک",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "پادکست",
+              "title": "گفت‌وگو با یک مدیر تیم درباره تجربه واقعی چابک‌سازی",
+              "pkw": "تجربه چابک سازی تیم",
+              "url": "/insights/podcasts/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "نشانه‌های چابک بودن سازمان",
+              "pkw": "نشانه‌های چابک بودن سازمان",
+              "url": "https://infourtech.com/industry4/5-signs-your-agile/",
+              "note": "پیلار تیم؛ موضوع Agile · آدرس واقعی موجود در سایت"
+            }
+          ]
+        },
+        {
+          "name": "سکشن ویژه",
+          "items": [
+            {
+              "fmt": "صفحه پیلار محصول",
+              "title": "XP Game — تجربه عملی یادگیری Agile",
+              "pkw": "بازی آموزشی Agile",
+              "url": "/learning/xp-game",
+              "note": "پیلار مستقل؛ لینک متقابل با «تیم»"
+            }
+          ]
+        },
+        {
+          "name": "خوشه AI برای تیم‌ها",
+          "items": [
+            {
+              "fmt": "مقاله",
+              "title": "کاربرد دستیارهای هوشمند در بهبود عملکرد تیم",
+              "pkw": "دستیار هوشمند برای تیم",
+              "url": "/insights/articles/[slug]",
+              "note": "پل موضوعی به پیلار «آینده دیجیتال»"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "دانش سازمانی و Agent چگونه کار تیم را متحول می‌کند",
+              "pkw": "Agent برای تیم",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مطالعه موردی",
+              "title": "پیاده‌سازی دستیار هوشمند در یک تیم فنی",
+              "pkw": "نمونه پیاده سازی دستیار هوشمند در تیم",
+              "url": "/case-studies/[slug]",
+              "note": ""
+            }
+          ]
+        },
+        {
+          "name": "خوشه یادگیری",
+          "items": [
+            {
+              "fmt": "دوره",
+              "title": "مبانی Agile و اسکرام برای مدیران تیم",
+              "pkw": "دوره Agile و اسکرام",
+              "url": "/learning/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "کارگاه سازمانی",
+              "title": "طراحی OKR تیمی",
+              "pkw": "کارگاه طراحی OKR",
+              "url": "/learning/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "وبینار",
+              "title": "فرهنگ‌سازی همکاری در تیم‌های فنی",
+              "pkw": "وبینار فرهنگ همکاری تیمی",
+              "url": "/learning/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "برنامه سازمانی",
+              "title": "کارگاه رهبری تیمی (سفارشی‌سازی‌شده)",
+              "pkw": "کارگاه رهبری تیمی سازمانی",
+              "url": "/learning/[slug]",
+              "note": ""
+            }
+          ]
+        },
+        {
+          "name": "خوشه منابع و ابزارها",
+          "items": [
+            {
+              "fmt": "الگوی آماده (Lead Magnet)",
+              "title": "قالب تعریف OKR تیمی",
+              "pkw": "دانلود قالب OKR تیمی",
+              "url": "/insights/articles/[slug]",
+              "note": "فایل دانلودی"
+            },
+            {
+              "fmt": "الگوی آماده",
+              "title": "چک‌لیست جلسه Retrospective",
+              "pkw": "چک لیست جلسه رتروسپکتیو",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            }
+          ]
+        },
+        {
+          "name": "خوشه خدمت",
+          "items": [
+            {
+              "fmt": "صفحه خدمت",
+              "title": "مشاوره توسعه سازمانی",
+              "pkw": "مشاوره توسعه سازمانی",
+              "url": "/consulting/organization-development",
+              "note": "فرهنگ، Agile، OKR، همکاری تیمی، ارتباط با XP Game"
+            }
+          ]
+        },
+        {
+          "name": "خوشه اثبات",
+          "items": [
+            {
+              "fmt": "مطالعه موردی",
+              "title": "مطالعات موردی تیم‌های فنی، صنعتی و پروژه‌های تحول",
+              "pkw": "نمونه تحول تیم فنی",
+              "url": "/case-studies/[slug]",
+              "note": ""
+            }
+          ]
+        },
+        {
+          "name": "XP Game / خوشه اندیشه",
+          "items": [
+            {
+              "fmt": "مقاله",
+              "title": "XP Game چیست و چگونه Agile را ملموس می‌کند",
+              "pkw": "XP Game چیست",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "چرا بازی‌های شبیه‌سازی در آموزش سازمانی مؤثرترند",
+              "pkw": "بازی شبیه سازی در آموزش سازمانی",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "ویدئو",
+              "title": "نمونه اجرای XP Game در یک سازمان",
+              "pkw": "نمونه اجرای XP Game",
+              "url": "/insights/videos/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مطالعه موردی",
+              "title": "نتایج اجرای XP Game در یک تیم/سازمان واقعی",
+              "pkw": "نتایج اجرای XP Game",
+              "url": "/case-studies/[slug]",
+              "note": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "آینده دیجیتال",
+      "name": "آینده دیجیتال",
+      "num": "۳",
+      "url": "/journeys/digital-future",
+      "headterm": "تحول دیجیتال سازمانی / AI",
+      "color": "#C2740A",
+      "count": 153,
+      "clusters": [
+        {
+          "name": "AI سازمانی / اندیشه",
+          "items": [
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی سازمانی چیست و از کجا شروع کنیم",
+              "pkw": "هوش مصنوعی سازمانی چیست",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "RAG و دانش سازمانی؛ چگونه AI را به داده‌های سازمان متصل کنیم",
+              "pkw": "RAG و دانش سازمانی",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "دستیار هوشمند سازمانی؛ کاربردها و محدودیت‌ها",
+              "pkw": "دستیار هوشمند سازمانی",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "Agent چیست و چه مسائلی را در سازمان حل می‌کند",
+              "pkw": "Agent چیست",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "امنیت و استقرار AI در سازمان‌های حساس به داده",
+              "pkw": "امنیت استقرار AI سازمانی",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "اتوماسیون فرایندها با AI",
+              "pkw": "اتوماسیون فرایند با AI",
+              "url": "/insights/articles/[slug]",
+              "note": "پل به RPA"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی چیست",
+              "pkw": "هوش مصنوعی چیست",
+              "url": "https://infourtech.com/industry4/ai/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "مزایای هوش مصنوعی",
+              "pkw": "مزایای هوش مصنوعی",
+              "url": "https://infourtech.com/industry4/advantages-of-ai/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "خطرات هوش مصنوعی",
+              "pkw": "خطرات هوش مصنوعی",
+              "url": "https://infourtech.com/industry4/dangers-of-ai/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "چالش‌های هوش مصنوعی",
+              "pkw": "چالش‌های هوش مصنوعی",
+              "url": "https://infourtech.com/industry4/ai-challenges/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "کاربردهای هوش مصنوعی",
+              "pkw": "کاربردهای هوش مصنوعی",
+              "url": "https://infourtech.com/industry4/uses-of-ai/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی در برابر هوش انسانی",
+              "pkw": "هوش مصنوعی در برابر هوش انسانی",
+              "url": "https://infourtech.com/industry4/ai-vs-human-intelligence/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش چیست",
+              "pkw": "هوش چیست",
+              "url": "https://infourtech.com/industry4/what-is-intelligence/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی در زندگی روزمره",
+              "pkw": "هوش مصنوعی در زندگی روزمره",
+              "url": "https://infourtech.com/industry4/ai-in-everyday-life/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی و یادگیری ماشین",
+              "pkw": "هوش مصنوعی و یادگیری ماشین",
+              "url": "https://infourtech.com/industry4/ai-machine-learning/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "یادگیری ماشین چیست",
+              "pkw": "یادگیری ماشین چیست",
+              "url": "https://infourtech.com/industry4/machine-learning/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "کاربردهای یادگیری ماشین",
+              "pkw": "کاربردهای یادگیری ماشین",
+              "url": "https://infourtech.com/industry4/machine-learning-applications/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "یادگیری عمیق و یادگیری ماشین",
+              "pkw": "یادگیری عمیق و یادگیری ماشین",
+              "url": "https://infourtech.com/industry4/deep-learning-machine-learning/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "مدل زبانی بزرگ (LLM) چیست",
+              "pkw": "مدل زبانی بزرگ (LLM) چیست",
+              "url": "https://infourtech.com/industry4/llm/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی مولد چیست",
+              "pkw": "هوش مصنوعی مولد چیست",
+              "url": "https://infourtech.com/industry4/generative-ai/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "آینده هوش مصنوعی",
+              "pkw": "آینده هوش مصنوعی",
+              "url": "https://infourtech.com/industry4/whats-next-for-ai-in-2024/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "رباتیک چیست",
+              "pkw": "رباتیک چیست",
+              "url": "https://infourtech.com/industry4/what-is-robotics/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "محاسبات کوانتومی و کامپیوترها",
+              "pkw": "محاسبات کوانتومی و کامپیوترها",
+              "url": "https://infourtech.com/industry4/quantom-computing-and-camputers/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "ابزارهای هوش مصنوعی برای کسب‌وکار",
+              "pkw": "ابزارهای هوش مصنوعی برای کسب‌وکار",
+              "url": "https://infourtech.com/industry4/ai-tools-suitable-for-businesses/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی در کشاورزی",
+              "pkw": "هوش مصنوعی در کشاورزی",
+              "url": "https://infourtech.com/industry4/ai-in-agriculture/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی در کارخانه",
+              "pkw": "هوش مصنوعی در کارخانه",
+              "url": "https://infourtech.com/industry4/ai-in-factory/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی در لجستیک",
+              "pkw": "هوش مصنوعی در لجستیک",
+              "url": "https://infourtech.com/industry4/ai-in-logistics/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی در مدیریت",
+              "pkw": "هوش مصنوعی در مدیریت",
+              "url": "https://infourtech.com/industry4/ai-in-management/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی در تولید",
+              "pkw": "هوش مصنوعی در تولید",
+              "url": "https://infourtech.com/industry4/ai-in-manufacturing/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی در پزشکی",
+              "pkw": "هوش مصنوعی در پزشکی",
+              "url": "https://infourtech.com/industry4/ai-in-medicine/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی در فروش",
+              "pkw": "هوش مصنوعی در فروش",
+              "url": "https://infourtech.com/industry4/ai-in-sales/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "یادگیری ماشین در کشاورزی",
+              "pkw": "یادگیری ماشین در کشاورزی",
+              "url": "https://infourtech.com/industry4/ml-in-agriculture/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی مولد به‌عنوان محرک رشد",
+              "pkw": "هوش مصنوعی مولد به‌عنوان محرک رشد",
+              "url": "https://infourtech.com/industry4/generative-ai-as-a-growth-catalyst-2/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "تأثیر هوش مصنوعی مولد بر تحول دیجیتال",
+              "pkw": "تأثیر هوش مصنوعی مولد بر تحول دیجیتال",
+              "url": "https://infourtech.com/industry4/generative-ai-changing-dna-digital-transformation/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی مولد و دوقلوی دیجیتال",
+              "pkw": "هوش مصنوعی مولد و دوقلوی دیجیتال",
+              "url": "https://infourtech.com/industry4/gen-ai-digital-twin/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "کاربرد هوش مصنوعی مولد در خرده‌فروشی",
+              "pkw": "کاربرد هوش مصنوعی مولد در خرده‌فروشی",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/7-ways-retailers-are-using-generative-ai/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی و فناوری‌های نو در داووس",
+              "pkw": "هوش مصنوعی و فناوری‌های نو در داووس",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/ai-and-emerging-technology-at-davos-2024/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "ساخت سازمان‌های منعطف با هوش مصنوعی",
+              "pkw": "ساخت سازمان‌های منعطف با هوش مصنوعی",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/building-flexible-organizations-with-ai/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "پذیرش هوش مصنوعی در محیط کار",
+              "pkw": "پذیرش هوش مصنوعی در محیط کار",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/embracing-ai-in-the-workplace/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "شخصی‌سازی با هوش مصنوعی مولد",
+              "pkw": "شخصی‌سازی با هوش مصنوعی مولد",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/generative-ai-the-art-of-personalization/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "چگونه از قدرت هوش مصنوعی استفاده کنیم",
+              "pkw": "چگونه از قدرت هوش مصنوعی استفاده کنیم",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/how-to-embrace-the-power-of-ai/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی کوانتومی",
+              "pkw": "هوش مصنوعی کوانتومی",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/quantum-ai/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "آینده هوش مصنوعی",
+              "pkw": "آینده هوش مصنوعی",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/the-future-of-ai-in-2024/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "آینده هوش مصنوعی در کسب‌وکار",
+              "pkw": "آینده هوش مصنوعی در کسب‌وکار",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/the-future-of-ai-in-business/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "اولویت‌دادن به هوش مصنوعی در تحول دیجیتال",
+              "pkw": "اولویت‌دادن به هوش مصنوعی در تحول دیجیتال",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/اولویت-دادن-به-هوش-مصنوعی-در-تحول-دیجیت/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "چگونه سازمان‌ها در برابر خطرات هوش مصنوعی مقاوم شوند",
+              "pkw": "چگونه سازمان‌ها در برابر خطرات هوش مصنوعی مقاوم شوند",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/چگونه-سازمان-ها-می-توانند-در-برابر-خطرا/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "ویدئو",
+              "title": "هفت مرحله هوش مصنوعی",
+              "pkw": "هفت مرحله هوش مصنوعی",
+              "url": "https://infourtech.com/videos/7-stages-of-ai/",
+              "note": "آدرس واقعی موجود در سایت"
+            }
+          ]
+        },
+        {
+          "name": "AI سازمانی / یادگیری",
+          "items": [
+            {
+              "fmt": "دوره",
+              "title": "مبانی هوش مصنوعی سازمانی برای مدیران غیرفنی",
+              "pkw": "دوره هوش مصنوعی برای مدیران",
+              "url": "/learning/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "کارگاه",
+              "title": "طراحی Use Case برای AI سازمانی",
+              "pkw": "کارگاه Use Case هوش مصنوعی",
+              "url": "/learning/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هفت گام برای عملیاتی‌سازی هوش مصنوعی",
+              "pkw": "هفت گام برای عملیاتی‌سازی هوش مصنوعی",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/7-steps-to-operationalize-ai/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "مقیاس‌پذیری هوش مصنوعی برای موفقیت پایدار",
+              "pkw": "مقیاس‌پذیری هوش مصنوعی برای موفقیت پایدار",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/scaling-ai-for-success-four-technical-enablers-for-sustained-impact-2/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "ویدئو",
+              "title": "پنج گام ساخت مدل هوش مصنوعی",
+              "pkw": "پنج گام ساخت مدل هوش مصنوعی",
+              "url": "https://infourtech.com/videos/five-steps-to-create-an-ai-model/",
+              "note": "آدرس واقعی موجود در سایت"
+            }
+          ]
+        },
+        {
+          "name": "AI سازمانی / خدمت",
+          "items": [
+            {
+              "fmt": "صفحه خدمت",
+              "title": "مشاوره هوش مصنوعی سازمانی",
+              "pkw": "مشاوره هوش مصنوعی سازمانی",
+              "url": "/consulting/enterprise-ai",
+              "note": "RAG، دستیار هوشمند، Agent، اتوماسیون، امنیت، Use Case"
+            }
+          ]
+        },
+        {
+          "name": "AI سازمانی / اثبات",
+          "items": [
+            {
+              "fmt": "مطالعه موردی",
+              "title": "پیاده‌سازی دستیار سازمانی مبتنی بر RAG",
+              "pkw": "نمونه پیاده سازی دستیار RAG",
+              "url": "/case-studies/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مطالعه موردی",
+              "title": "اتوماسیون یک فرایند سازمانی با AI",
+              "pkw": "نمونه اتوماسیون فرایند با AI",
+              "url": "/case-studies/[slug]",
+              "note": ""
+            }
+          ]
+        },
+        {
+          "name": "داده و تحلیل",
+          "items": [
+            {
+              "fmt": "مقاله",
+              "title": "چرا سازمان شما به فرهنگ داده‌محور نیاز دارد",
+              "pkw": "فرهنگ داده محور سازمانی",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "از داده خام تا داشبورد تصمیم‌ساز",
+              "pkw": "داشبورد تصمیم ساز",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مطالعه موردی",
+              "title": "پیاده‌سازی داشبورد داده سازمانی",
+              "pkw": "نمونه پیاده سازی داشبورد داده",
+              "url": "/case-studies/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "زنجیره تأمین و صنعت ۴",
+              "pkw": "زنجیره تأمین و صنعت ۴",
+              "url": "https://infourtech.com/industry4/industry4-supply-chain/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوشمندسازی زنجیره تأمین",
+              "pkw": "هوشمندسازی زنجیره تأمین",
+              "url": "https://infourtech.com/industry4/supply-chain-intelligence/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "فرهنگ داده‌محور و موفقیت تحول دیجیتال",
+              "pkw": "فرهنگ داده‌محور و موفقیت تحول دیجیتال",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/the-role-of-data-driven-culture-in-dt-success/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "تأثیر داده بلادرنگ بر دولت‌ها",
+              "pkw": "تأثیر داده بلادرنگ بر دولت‌ها",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/the-impact-of-real-time-data-on-governments/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "ویدئو",
+              "title": "حاکمیت داده به زبان ساده",
+              "pkw": "حاکمیت داده به زبان ساده",
+              "url": "https://infourtech.com/videos/data-governance-in-simple-terms/",
+              "note": "آدرس واقعی موجود در سایت"
+            }
+          ]
+        },
+        {
+          "name": "اتوماسیون و RPA",
+          "items": [
+            {
+              "fmt": "مقاله",
+              "title": "RPA چیست و چه تفاوتی با AI دارد",
+              "pkw": "RPA چیست",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "نشانه‌های آمادگی سازمان برای اتوماسیون فرایند",
+              "pkw": "آمادگی سازمان برای اتوماسیون",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "ریسک‌های امنیتی RPA",
+              "pkw": "ریسک‌های امنیتی RPA",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/rpa-security-risks/",
+              "note": "آدرس واقعی موجود در سایت"
+            }
+          ]
+        },
+        {
+          "name": "محصول و پلتفرم",
+          "items": [
+            {
+              "fmt": "مقاله",
+              "title": "تفکر محصول‌محور در سازمان‌های سنتی",
+              "pkw": "تفکر محصول محور",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            }
+          ]
+        },
+        {
+          "name": "Cloud و DevOps",
+          "items": [
+            {
+              "fmt": "مقاله",
+              "title": "مهاجرت به Cloud؛ از کجا شروع کنیم",
+              "pkw": "مهاجرت به cloud",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "رایانش ابری و اینترنت اشیا",
+              "pkw": "رایانش ابری و اینترنت اشیا",
+              "url": "https://infourtech.com/industry4/cloud-computing-iot/",
+              "note": "آدرس واقعی موجود در سایت"
+            }
+          ]
+        },
+        {
+          "name": "IoT و فناوری‌های نو",
+          "items": [
+            {
+              "fmt": "مقاله",
+              "title": "IoT در صنعت؛ کاربردها و چالش‌های پیاده‌سازی",
+              "pkw": "IoT در صنعت",
+              "url": "/insights/articles/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "اینترنت اشیا چیست",
+              "pkw": "اینترنت اشیا چیست",
+              "url": "https://infourtech.com/industry4/iot/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "معماری اینترنت اشیا",
+              "pkw": "معماری اینترنت اشیا",
+              "url": "https://infourtech.com/industry4/iot-architecture/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "تاریخچه اینترنت اشیا",
+              "pkw": "تاریخچه اینترنت اشیا",
+              "url": "https://infourtech.com/industry4/iot-history/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "امنیت اینترنت اشیا",
+              "pkw": "امنیت اینترنت اشیا",
+              "url": "https://infourtech.com/industry4/iot-security/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "اینترنت اشیا و 5G",
+              "pkw": "اینترنت اشیا و 5G",
+              "url": "https://infourtech.com/industry4/iot-5g/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "چالش‌های اینترنت اشیا",
+              "pkw": "چالش‌های اینترنت اشیا",
+              "url": "https://infourtech.com/industry4/challenges-in-iot/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "کاربردهای اینترنت اشیا",
+              "pkw": "کاربردهای اینترنت اشیا",
+              "url": "https://infourtech.com/industry4/uses-of-iot/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هوش مصنوعی و اینترنت اشیا",
+              "pkw": "هوش مصنوعی و اینترنت اشیا",
+              "url": "https://infourtech.com/industry4/ai-and-iot/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "بلاک‌چین و اینترنت اشیا",
+              "pkw": "بلاک‌چین و اینترنت اشیا",
+              "url": "https://infourtech.com/industry4/blockchain-iot/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "اینترنت اشیای صنعتی (IIoT)",
+              "pkw": "اینترنت اشیای صنعتی (IIoT)",
+              "url": "https://infourtech.com/industry4/iiot/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "اینترنت اشیای پزشکی (IoMT)",
+              "pkw": "اینترنت اشیای پزشکی (IoMT)",
+              "url": "https://infourtech.com/industry4/iomt/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "اینترنت اشیا در کشاورزی",
+              "pkw": "اینترنت اشیا در کشاورزی",
+              "url": "https://infourtech.com/industry4/iot-in-agriculture/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "اینترنت اشیا در کسب‌وکار",
+              "pkw": "اینترنت اشیا در کسب‌وکار",
+              "url": "https://infourtech.com/industry4/iot-in-business/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "اینترنت اشیا در سلامت",
+              "pkw": "اینترنت اشیا در سلامت",
+              "url": "https://infourtech.com/industry4/iot-in-healthcare/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "اینترنت اشیا در لجستیک",
+              "pkw": "اینترنت اشیا در لجستیک",
+              "url": "https://infourtech.com/industry4/iot-in-logistics/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "اینترنت اشیا در شهر هوشمند",
+              "pkw": "اینترنت اشیا در شهر هوشمند",
+              "url": "https://infourtech.com/industry4/iot-in-smart-city/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "اینترنت اشیا در زنجیره تأمین",
+              "pkw": "اینترنت اشیا در زنجیره تأمین",
+              "url": "https://infourtech.com/industry4/iot-in-supply-chains/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "اینترنت اشیا در صنعت غذا",
+              "pkw": "اینترنت اشیا در صنعت غذا",
+              "url": "https://infourtech.com/industry4/iot-food-industry/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "امنیت سایبری چیست",
+              "pkw": "امنیت سایبری چیست",
+              "url": "https://infourtech.com/industry4/what-is-cybersecurity/",
+              "note": "آدرس واقعی موجود در سایت"
+            }
+          ]
+        },
+        {
+          "name": "خوشه خدمت مرکزی",
+          "items": [
+            {
+              "fmt": "صفحه خدمت",
+              "title": "مشاوره تحول دیجیتال",
+              "pkw": "مشاوره تحول دیجیتال",
+              "url": "/consulting/digital-transformation",
+              "note": "نشانه‌های نیاز، چارچوب همکاری، مراحل، فرم درخواست جلسه"
+            },
+            {
+              "fmt": "صفحه خدمت",
+              "title": "هوش مصنوعی سازمانی",
+              "pkw": "هوش مصنوعی سازمانی",
+              "url": "https://infourtech.com/enterprise-ai/",
+              "note": "صفحه موجود سایت؛ معادل مشاوره AI سازمانی · آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "تحول دیجیتال چیست",
+              "pkw": "تحول دیجیتال چیست",
+              "url": "https://infourtech.com/industry4/digital-transformation/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "تحول دیجیتال و انقلاب صنعتی چهارم",
+              "pkw": "تحول دیجیتال و انقلاب صنعتی چهارم",
+              "url": "https://infourtech.com/industry4/digital-transformation-i4/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "انقلاب صنعتی چهارم",
+              "pkw": "انقلاب صنعتی چهارم",
+              "url": "https://infourtech.com/industry4/fourth-industrial-revolution/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "تحول فناوری اطلاعات برای موفقیت دیجیتال",
+              "pkw": "تحول فناوری اطلاعات برای موفقیت دیجیتال",
+              "url": "https://infourtech.com/industry4/transforming-it-for-digital-success/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "فناوری‌های شروع تحول دیجیتال",
+              "pkw": "فناوری‌های شروع تحول دیجیتال",
+              "url": "https://infourtech.com/industry4/5-technologies-to-jump-start-digital-transformation-in-2024/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "کلیدهای موفقیت تحول دیجیتال",
+              "pkw": "کلیدهای موفقیت تحول دیجیتال",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/4-keys-to-success/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "فرصت‌ها و چالش‌های تحول دیجیتال",
+              "pkw": "فرصت‌ها و چالش‌های تحول دیجیتال",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/digital-transformation-opportunities-and-challenges/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "پل میان کسب‌وکار و فناوری اطلاعات در تحول دیجیتال",
+              "pkw": "پل میان کسب‌وکار و فناوری اطلاعات در تحول دیجیتال",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/unlocking-dt-visualizing-the-bridge-between-business-and-it/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "مدیریت هویت و دسترسی (IAM) در تحول دیجیتال",
+              "pkw": "مدیریت هویت و دسترسی (IAM) در تحول دیجیتال",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/iam-and-digital-transformation-2/",
+              "note": "آدرس واقعی موجود در سایت"
+            }
+          ]
+        },
+        {
+          "name": "مسیر یادگیری (Hub)",
+          "items": [
+            {
+              "fmt": "سکشن مرحله‌ای",
+              "title": "۱. آشنایی و شناخت",
+              "pkw": "آشنایی با تحول دیجیتال",
+              "url": "/consulting/digital-transformation#stage-1",
+              "note": ""
+            },
+            {
+              "fmt": "سکشن مرحله‌ای",
+              "title": "۲. ارزیابی و طراحی",
+              "pkw": "ارزیابی آمادگی تحول دیجیتال",
+              "url": "/consulting/digital-transformation#stage-2",
+              "note": ""
+            },
+            {
+              "fmt": "سکشن مرحله‌ای",
+              "title": "۳. آماده‌سازی سازمان",
+              "pkw": "آماده سازی سازمان برای تحول دیجیتال",
+              "url": "/consulting/digital-transformation#stage-3",
+              "note": ""
+            },
+            {
+              "fmt": "سکشن مرحله‌ای",
+              "title": "۴. اجرا و پیاده‌سازی",
+              "pkw": "اجرای تحول دیجیتال",
+              "url": "/consulting/digital-transformation#stage-4",
+              "note": ""
+            },
+            {
+              "fmt": "سکشن مرحله‌ای",
+              "title": "۵. بهینه‌سازی و نوآوری",
+              "pkw": "بهینه سازی و نوآوری دیجیتال",
+              "url": "/consulting/digital-transformation#stage-5",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "نقشه راه تحول دیجیتال",
+              "pkw": "نقشه راه تحول دیجیتال",
+              "url": "https://infourtech.com/industry4/digital-transformation-roadmap/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "فرهنگ سازمانی و مانع تحول دیجیتال",
+              "pkw": "فرهنگ سازمانی و مانع تحول دیجیتال",
+              "url": "https://infourtech.com/industry4/organizational-culture-biggest-obstacle-digital-transformation/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "موانع تحول دیجیتال و راه‌حل‌ها",
+              "pkw": "موانع تحول دیجیتال و راه‌حل‌ها",
+              "url": "https://infourtech.com/industry4/10-digital-transformation-roadblocks-5-tips-overcoming/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "چگونه تحول دیجیتال را شروع کنیم",
+              "pkw": "چگونه تحول دیجیتال را شروع کنیم",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/how-to-start-a-digital-transformation/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "اهمیت فرهنگ حامی تحول دیجیتال",
+              "pkw": "اهمیت فرهنگ حامی تحول دیجیتال",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/the-importance-of-pro-digital-transformation-culture/",
+              "note": "آدرس واقعی موجود در سایت"
+            }
+          ]
+        },
+        {
+          "name": "خوشه یادگیری",
+          "items": [
+            {
+              "fmt": "دوره عمومی",
+              "title": "دوره عمومی تحول دیجیتال",
+              "pkw": "دوره تحول دیجیتال",
+              "url": "/learning/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "دوره ویژه مدیران",
+              "title": "دوره تحول دیجیتال ویژه مدیران",
+              "pkw": "دوره تحول دیجیتال برای مدیران",
+              "url": "/learning/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "دوره سازمانی",
+              "title": "دوره سازمانی سفارشی تحول دیجیتال",
+              "pkw": "دوره سازمانی تحول دیجیتال",
+              "url": "/learning/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "وبینار",
+              "title": "وبینار تحول دیجیتال صنعت ۴",
+              "pkw": "وبینار تحول دیجیتال صنعت ۴",
+              "url": "https://infourtech.com/webinar-i4-digitaltransformation/",
+              "note": "صفحه موجود سایت · آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "دوره",
+              "title": "آموزش تحول دیجیتال",
+              "pkw": "آموزش تحول دیجیتال",
+              "url": "https://infourtech.com/آموزش-تحول-دیجیتال/",
+              "note": "صفحه موجود سایت · آدرس واقعی موجود در سایت"
+            }
+          ]
+        },
+        {
+          "name": "خوشه اثبات",
+          "items": [
+            {
+              "fmt": "مطالعه موردی",
+              "title": "نمونه‌های تحول فرایند، AI سازمانی، داشبورد داده و اتوماسیون",
+              "pkw": "نمونه تحول دیجیتال سازمانی",
+              "url": "/case-studies/[slug]",
+              "note": ""
+            },
+            {
+              "fmt": "مقاله",
+              "title": "تحول دیجیتال در کشاورزی",
+              "pkw": "تحول دیجیتال در کشاورزی",
+              "url": "https://infourtech.com/industry4/digital-transformation-agriculture/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "تحول دیجیتال در بانکداری",
+              "pkw": "تحول دیجیتال در بانکداری",
+              "url": "https://infourtech.com/industry4/digital-transformation-in-banking/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "تحول دیجیتال در لجستیک",
+              "pkw": "تحول دیجیتال در لجستیک",
+              "url": "https://infourtech.com/industry4/digital-transformation-in-logistics/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "تحول دیجیتال در صنعت نفت و گاز",
+              "pkw": "تحول دیجیتال در صنعت نفت و گاز",
+              "url": "https://infourtech.com/industry4/تحول-دیجیتال-در-صنعت-نفت،-گاز-و-پتروشیم/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "کشاورزی هوشمند",
+              "pkw": "کشاورزی هوشمند",
+              "url": "https://infourtech.com/industry4/smart-agriculture/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "مزرعه هوشمند",
+              "pkw": "مزرعه هوشمند",
+              "url": "https://infourtech.com/industry4/smart-farm/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "گلخانه هوشمند",
+              "pkw": "گلخانه هوشمند",
+              "url": "https://infourtech.com/industry4/smart-greenhouse/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "آبیاری هوشمند",
+              "pkw": "آبیاری هوشمند",
+              "url": "https://infourtech.com/industry4/smart-irrigation/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "فرودگاه هوشمند",
+              "pkw": "فرودگاه هوشمند",
+              "url": "https://infourtech.com/industry4/smart-airport/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "ساختمان هوشمند",
+              "pkw": "ساختمان هوشمند",
+              "url": "https://infourtech.com/industry4/smart-buildings/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "شهر هوشمند",
+              "pkw": "شهر هوشمند",
+              "url": "https://infourtech.com/industry4/smart-cities/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "جاده هوشمند",
+              "pkw": "جاده هوشمند",
+              "url": "https://infourtech.com/industry4/smart-road/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "پارکینگ هوشمند",
+              "pkw": "پارکینگ هوشمند",
+              "url": "https://infourtech.com/industry4/smart-parking/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "کارخانه هوشمند",
+              "pkw": "کارخانه هوشمند",
+              "url": "https://infourtech.com/industry4/smart-factory/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "خط تولید هوشمند",
+              "pkw": "خط تولید هوشمند",
+              "url": "https://infourtech.com/industry4/smart-production-line/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "صنعت هوشمند",
+              "pkw": "صنعت هوشمند",
+              "url": "https://infourtech.com/industry4/smart-industry/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "معدن هوشمند",
+              "pkw": "معدن هوشمند",
+              "url": "https://infourtech.com/industry4/smart-mine/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "محصول هوشمند",
+              "pkw": "محصول هوشمند",
+              "url": "https://infourtech.com/industry4/smart-product/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "انبار هوشمند",
+              "pkw": "انبار هوشمند",
+              "url": "https://infourtech.com/industry4/smart-warehouse/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "لجستیک هوشمند",
+              "pkw": "لجستیک هوشمند",
+              "url": "https://infourtech.com/industry4/smart-logistics/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "بیمارستان هوشمند",
+              "pkw": "بیمارستان هوشمند",
+              "url": "https://infourtech.com/industry4/smart-hospital/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هتل هوشمند",
+              "pkw": "هتل هوشمند",
+              "url": "https://infourtech.com/industry4/smart-hotel/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "مدرسه هوشمند",
+              "pkw": "مدرسه هوشمند",
+              "url": "https://infourtech.com/industry4/smart-school/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "تحول دیجیتال و هوش مصنوعی در معدن",
+              "pkw": "تحول دیجیتال و هوش مصنوعی در معدن",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/digital-transformation-and-ai-in-mining/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "نقش هوش مصنوعی در تحول دیجیتال مرسدس‌بنز",
+              "pkw": "نقش هوش مصنوعی در تحول دیجیتال مرسدس‌بنز",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/نقش-هوش-مصنوعی-در-تحول-دیجیتال-مرسدس-بن/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "هفت نمونه شگفت‌انگیز تحول دیجیتال",
+              "pkw": "هفت نمونه شگفت‌انگیز تحول دیجیتال",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/هفت-مثال-شگفت-انگیز-از-تحولات-دیجیتالی/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "تحول دیجیتال در صنعت نفت، گاز و پتروشیمی",
+              "pkw": "تحول دیجیتال در صنعت نفت، گاز و پتروشیمی",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/تحول-دیجیتال-در-صنعت-نفت،-گاز-و-پتروشیم/",
+              "note": "این آدرس با نسخهٔ industry4 مشابه است؛ در سایت واقعی یکی از این دو نگه داشته شود · آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "ویدئو",
+              "title": "هوش مصنوعی در صنعت نفت و گاز",
+              "pkw": "هوش مصنوعی در صنعت نفت و گاز",
+              "url": "https://infourtech.com/videos/ai-in-oil-and-gas/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "ویدئو",
+              "title": "کارخانه هوشمند",
+              "pkw": "کارخانه هوشمند",
+              "url": "https://infourtech.com/videos/smart-factory-2/",
+              "note": "آدرس واقعی موجود در سایت"
+            }
+          ]
+        },
+        {
+          "name": "خوشه اندیشه",
+          "items": [
+            {
+              "fmt": "مقاله",
+              "title": "ده ایده تحول دیجیتال و هوش مصنوعی برای کسب‌وکار",
+              "pkw": "ده ایده تحول دیجیتال و هوش مصنوعی برای کسب‌وکار",
+              "url": "https://infourtech.com/industry4/ten-ideas-of-dt-and-ai-shaping-business/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "ده ایده تحول دیجیتال و هوش مصنوعی برای کسب‌وکار (بخش دوم)",
+              "pkw": "ده ایده تحول دیجیتال و هوش مصنوعی برای کسب‌وکار (بخش دوم)",
+              "url": "https://infourtech.com/industry4/ten-ideas-of-dt-and-ai-shaping-business-2/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "ده ایده تحول دیجیتال و هوش مصنوعی برای کسب‌وکار (بخش سوم)",
+              "pkw": "ده ایده تحول دیجیتال و هوش مصنوعی برای کسب‌وکار (بخش سوم)",
+              "url": "https://infourtech.com/industry4/ten-ideas-of-dt-and-ai-shaping-business-3/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "روندهای تحول دیجیتال",
+              "pkw": "روندهای تحول دیجیتال",
+              "url": "https://infourtech.com/industry4/top-digital-transformation-trends-2024/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "دوقلوی دیجیتال چیست",
+              "pkw": "دوقلوی دیجیتال چیست",
+              "url": "https://infourtech.com/industry4/digital-twin/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "دوقلوی دیجیتال زنجیره تأمین",
+              "pkw": "دوقلوی دیجیتال زنجیره تأمین",
+              "url": "https://infourtech.com/industry4/supply-chain-twin/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "گزارش و تحلیل رویداد گیتکس",
+              "pkw": "گزارش و تحلیل رویداد گیتکس",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/report-and-analysis-of-gitex-2023/",
+              "note": "آدرس واقعی موجود در سایت"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "دوقلوی دیجیتال؛ کلید توسعه محصول هوشمند",
+              "pkw": "دوقلوی دیجیتال؛ کلید توسعه محصول هوشمند",
+              "url": "https://infourtech.com/new-way-in-digital-transformation/digital-twins-the-key-smart-product-development/",
+              "note": "آدرس واقعی موجود در سایت"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "کتاب تا مدیر شدن",
+      "name": "کتاب تا مدیر شدن",
+      "num": "۴",
+      "url": "/books/ta-modir-shodan",
+      "headterm": "لندینگ فروش کتاب",
+      "color": "#C2255C",
+      "count": 14,
+      "clusters": [
+        {
+          "name": "سکشن‌های لندینگ",
+          "items": [
+            {
+              "fmt": "سکشن Hero",
+              "title": "از یک مهندس خوب تا یک رهبر فنی مؤثر",
+              "pkw": "—",
+              "url": "/books/ta-modir-shodan#hero",
+              "note": ""
+            },
+            {
+              "fmt": "سکشن اعتماد و مزیت‌ها",
+              "title": "ارسال، پرداخت امن، مشخصات چاپ، خرید سازمانی",
+              "pkw": "—",
+              "url": "/books/ta-modir-shodan#trust",
+              "note": ""
+            },
+            {
+              "fmt": "سکشن مخاطب",
+              "title": "کتاب برای چه کسانی است؟",
+              "pkw": "—",
+              "url": "/books/ta-modir-shodan#audience",
+              "note": ""
+            },
+            {
+              "fmt": "سکشن مسیر حرفه‌ای",
+              "title": "مسیر حرفه‌ای کتاب (متخصص فنی تا CTO)",
+              "pkw": "—",
+              "url": "/books/ta-modir-shodan#career-path",
+              "note": ""
+            },
+            {
+              "fmt": "سکشن محتوا",
+              "title": "چه می‌آموزید؟",
+              "pkw": "—",
+              "url": "/books/ta-modir-shodan#what-you-learn",
+              "note": ""
+            },
+            {
+              "fmt": "Lead Magnet",
+              "title": "نمونه صفحات + دریافت فصل نمونه",
+              "pkw": "دانلود فصل نمونه کتاب تا مدیر شدن",
+              "url": "/books/ta-modir-shodan#sample-chapter",
+              "note": ""
+            },
+            {
+              "fmt": "سکشن اکوسیستم",
+              "title": "اکوسیستم کتاب (مقالات، ویدئوها، کارگاه‌ها، کوچینگ)",
+              "pkw": "—",
+              "url": "/books/ta-modir-shodan#ecosystem",
+              "note": ""
+            },
+            {
+              "fmt": "سکشن درباره",
+              "title": "درباره مترجم و توسعه‌دهنده",
+              "pkw": "—",
+              "url": "/books/ta-modir-shodan#about-translator",
+              "note": ""
+            },
+            {
+              "fmt": "سکشن نظرات",
+              "title": "نظرات خوانندگان",
+              "pkw": "—",
+              "url": "/books/ta-modir-shodan#reviews",
+              "note": ""
+            },
+            {
+              "fmt": "CTA پایانی",
+              "title": "CTA پایانی خرید",
+              "pkw": "—",
+              "url": "/books/ta-modir-shodan#cta",
+              "note": ""
+            }
+          ]
+        },
+        {
+          "name": "محتوای اختصاصی",
+          "items": [
+            {
+              "fmt": "مقاله",
+              "title": "خلاصه فصل اول کتاب «تا مدیر شدن»",
+              "pkw": "خلاصه فصل اول تا مدیر شدن",
+              "url": "/insights/articles/[slug]",
+              "note": "نسخه عمومی صفحه فرم فصل نمونه"
+            },
+            {
+              "fmt": "مقاله",
+              "title": "چرا کتاب «تا مدیر شدن» را ترجمه کردیم؛ روایت پشت پروژه",
+              "pkw": "روایت ترجمه کتاب تا مدیر شدن",
+              "url": "/insights/articles/[slug]",
+              "note": "تقویت سکشن «درباره مترجم»"
+            },
+            {
+              "fmt": "صفحه فرعی",
+              "title": "خرید سازمانی و سفارش عمده",
+              "pkw": "خرید سازمانی کتاب تا مدیر شدن",
+              "url": "/books/ta-modir-shodan/bulk-order",
+              "note": "CTA فرعی با فرم اختصاصی"
+            }
+          ]
+        },
+        {
+          "name": "آرشیو والد",
+          "items": [
+            {
+              "fmt": "آرشیو",
+              "title": "همه کتاب‌ها",
+              "pkw": "—",
+              "url": "/books",
+              "note": "Parent Archive برای کتاب‌های بعدی"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "supporting": {
+    "name": "خوشه‌های پشتیبان",
+    "url": "—",
+    "headterm": "اتصال‌دهنده و اعتمادسازی",
+    "color": "#64748B",
+    "count": 8,
+    "clusters": [
+      {
+        "name": "آرشیو والد",
+        "items": [
+          {
+            "fmt": "آرشیو",
+            "title": "مطالعات موردی",
+            "pkw": "مطالعات موردی اینفورتک",
+            "url": "/case-studies",
+            "note": "گره اتصال میان تمام پیلارها و خدمات"
+          },
+          {
+            "fmt": "آرشیو",
+            "title": "همه محتوای اندیشه‌ها",
+            "pkw": "—",
+            "url": "/insights",
+            "note": "فیلتر بر اساس مسیر/موضوع/فرمت"
+          },
+          {
+            "fmt": "آرشیو",
+            "title": "همه محتوای یادگیری",
+            "pkw": "—",
+            "url": "/learning",
+            "note": "دوره/کارگاه"
+          },
+          {
+            "fmt": "آرشیو",
+            "title": "همه خدمات مشاوره",
+            "pkw": "—",
+            "url": "/consulting",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "name": "صفحه پشتیبان",
+        "items": [
+          {
+            "fmt": "صفحه شرکت",
+            "title": "درباره اینفورتک",
+            "pkw": "درباره اینفورتک",
+            "url": "/about",
+            "note": "پشتیبان E-E-A-T"
+          },
+          {
+            "fmt": "صفحه تماس",
+            "title": "تماس با ما",
+            "pkw": "تماس با اینفورتک",
+            "url": "/contact",
+            "note": "گره نهایی تبدیل"
+          },
+          {
+            "fmt": "صفحه شرکت",
+            "title": "درباره اینفورتک",
+            "pkw": "درباره اینفورتک",
+            "url": "https://infourtech.com/about-us/",
+            "note": "صفحه موجود سایت · آدرس واقعی موجود در سایت"
+          },
+          {
+            "fmt": "صفحه تماس",
+            "title": "تماس با اینفورتک",
+            "pkw": "تماس با اینفورتک",
+            "url": "https://infourtech.com/contact-us/",
+            "note": "صفحه موجود سایت · آدرس واقعی موجود در سایت"
+          }
+        ]
+      }
+    ]
+  },
+  "totalItems": 242
+}
+</script>
+
+<script>
+(function(){
+  const data = JSON.parse(document.getElementById('site-data').textContent);
+  const colorClass = { 0:'c1',1:'c2',2:'c3',3:'c4',4:'c5',5:'c6' };
+
+  // -------- Stats bar --------
+  const statsEl = document.getElementById('stats');
+  const statDefs = [
+    { label: 'پیلار اصلی', value: data.pillars.length },
+    { label: 'آیتم محتوایی', value: data.totalItems },
+    { label: 'خوشه پشتیبان', value: data.supporting.clusters.reduce((a,c)=>a+c.items.length,0) },
+  ];
+  statDefs.forEach(s=>{
+    const d = document.createElement('div');
+    d.className = 'stat';
+    d.innerHTML = `<b>${toFa(s.value)}</b><span>${s.label}</span>`;
+    statsEl.appendChild(d);
+  });
+
+  function toFa(n){
+    const map = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+    return String(n).split('').map(ch => /[0-9]/.test(ch) ? map[ch] : ch).join('');
+  }
+
+  // -------- Legend --------
+  const legend = document.getElementById('legend');
+  data.pillars.forEach((p, i)=>{
+    const cls = colorClass[i];
+    const span = document.createElement('span');
+    span.className = 'legend-item';
+    span.innerHTML = `<span class="legend-swatch" style="background:var(--p${i+1})"></span>${p.num}. ${p.name}`;
+    legend.appendChild(span);
+  });
+
+  // -------- Connector drops (visual only, matches column count) --------
+  const drops = document.getElementById('connectorDrops');
+  data.pillars.forEach(()=>{
+    const d = document.createElement('div');
+    d.className = 'connector-drop';
+    drops.appendChild(d);
+  });
+
+  // -------- Pillar cards --------
+  const row = document.getElementById('pillarsRow');
+  data.pillars.forEach((p, i)=>{
+    const cls = colorClass[i];
+    const card = document.createElement('details');
+    card.className = `pillar-card ${cls}`;
+
+    const summary = document.createElement('summary');
+    summary.innerHTML = `
+      <div class="pillar-head-row">
+        <span class="pillar-num">${p.num}</span>
+        <span class="pillar-chevron">▾</span>
+      </div>
+      <div class="pillar-title">${p.name}</div>
+      <div class="pillar-headterm">${p.headterm}</div>
+      <div class="pillar-meta">
+        <span class="pillar-url mono">${p.url}</span>
+        <span class="pillar-count">${toFa(p.count)} آیتم</span>
+      </div>
+    `;
+    card.appendChild(summary);
+
+    const body = document.createElement('div');
+    body.className = 'pillar-body';
+    p.clusters.forEach(cluster=>{
+      body.appendChild(buildClusterGroup(cluster));
+    });
+    card.appendChild(body);
+
+    row.appendChild(card);
+  });
+
+  function buildClusterGroup(cluster){
+    const group = document.createElement('div');
+    group.className = 'cluster-group';
+
+    const btn = document.createElement('button');
+    btn.className = 'cluster-toggle';
+    btn.type = 'button';
+    btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML = `
+      <span class="cluster-name">${cluster.name}</span>
+      <span class="cluster-count">${toFa(cluster.items.length)}</span>
+      <span class="cluster-chevron">▾</span>
+    `;
+
+    const list = document.createElement('ul');
+    list.className = 'item-list';
+    cluster.items.forEach(it=>{
+      const li = document.createElement('li');
+      li.className = 'item-row';
+      const noteHtml = it.note ? `<span class="item-note">${it.note}</span>` : '';
+      const pkwHtml = (it.pkw && it.pkw !== '—') ? `<span class="item-pkw">${it.pkw}</span>` : '';
+      li.innerHTML = `
+        <div class="item-title">${it.title}<span class="item-fmt">${it.fmt}</span></div>
+        <div class="item-sub">
+          ${pkwHtml}
+          <span class="item-url mono">${it.url}</span>
+          ${noteHtml}
+        </div>
+      `;
+      list.appendChild(li);
+    });
+
+    btn.addEventListener('click', ()=>{
+      const isOpen = list.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    group.appendChild(btn);
+    group.appendChild(list);
+    return group;
+  }
+
+  // -------- Supporting card --------
+  document.getElementById('supportSub').textContent =
+    `${toFa(data.supporting.clusters.reduce((a,c)=>a+c.items.length,0))} صفحه — گره اتصال میان تمام پیلارها و خدمات`;
+
+  const supportBody = document.getElementById('supportBody');
+  data.supporting.clusters.forEach(cluster=>{
+    supportBody.appendChild(buildClusterGroup(cluster));
+  });
+
+  // -------- Expand / collapse all --------
+  document.getElementById('expandAll').addEventListener('click', ()=>{
+    document.querySelectorAll('.pillar-card, #supportCard').forEach(d=> d.open = true);
+    document.querySelectorAll('.item-list').forEach(l=> l.classList.add('open'));
+    document.querySelectorAll('.cluster-toggle').forEach(b=> b.setAttribute('aria-expanded','true'));
+  });
+  document.getElementById('collapseAll').addEventListener('click', ()=>{
+    document.querySelectorAll('.pillar-card, #supportCard').forEach(d=> d.open = false);
+    document.querySelectorAll('.item-list').forEach(l=> l.classList.remove('open'));
+    document.querySelectorAll('.cluster-toggle').forEach(b=> b.setAttribute('aria-expanded','false'));
+  });
+
+})();
+</script>
+
+</body>
+</html>
